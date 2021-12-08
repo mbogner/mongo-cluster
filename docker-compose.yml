@@ -1,0 +1,87 @@
+version: "3.9"
+services:
+
+  configsvr0:
+    image: mongo
+    command: mongod --configsvr --replSet configsvr --port 27017 --dbpath /data/db
+    volumes:
+      - configsvr0:/data/db
+    ports:
+      - "127.0.0.1:27001:27017"
+  configsvr1:
+    image: mongo
+    command: mongod --configsvr --replSet configsvr --port 27017 --dbpath /data/db
+    volumes:
+      - configsvr1:/data/db
+    ports:
+      - "127.0.0.1:27002:27017"
+  configsvr2:
+    image: mongo
+    command: mongod --configsvr --replSet configsvr --port 27017 --dbpath /data/db
+    volumes:
+      - configsvr2:/data/db
+    ports:
+      - "127.0.0.1:27003:27017"
+
+  shard0svr0:
+    image: mongo
+    command: mongod --shardsvr --replSet shard0 --port 27017 --dbpath /data/db
+    volumes:
+      - shard0svr0:/data/db
+    ports:
+      - "127.0.0.1:27004:27017"
+  shard0svr1:
+    image: mongo
+    command: mongod --shardsvr --replSet shard0 --port 27017 --dbpath /data/db
+    volumes:
+      - shard0svr1:/data/db
+    ports:
+      - "127.0.0.1:27005:27017"
+  shard0svr2:
+    image: mongo
+    command: mongod --shardsvr --replSet shard0 --port 27017 --dbpath /data/db
+    volumes:
+      - shard0svr2:/data/db
+    ports:
+      - "127.0.0.1:27006:27017"
+
+  shard1svr0:
+    image: mongo
+    command: mongod --shardsvr --replSet shard1 --port 27017 --dbpath /data/db
+    volumes:
+      - shard1svr0:/data/db
+    ports:
+      - "127.0.0.1:27007:27017"
+  shard1svr1:
+    image: mongo
+    command: mongod --shardsvr --replSet shard1 --port 27017 --dbpath /data/db
+    volumes:
+      - shard1svr1:/data/db
+    ports:
+      - "127.0.0.1:27008:27017"
+  shard1svr2:
+    image: mongo
+    command: mongod --shardsvr --replSet shard1 --port 27017 --dbpath /data/db
+    volumes:
+      - shard1svr2:/data/db
+    ports:
+      - "127.0.0.1:27009:27017"
+
+  mongos:
+    image: mongo
+    command: mongos --configdb configsvr/configsvr0:27017,configsvr1:27017,configsvr2:27017 --bind_ip 0.0.0.0 --port 27017
+    ports:
+      - "127.0.0.1:27017:27017"
+
+volumes:
+  configsvr0:
+  configsvr1:
+  configsvr2:
+
+  shard0svr0:
+  shard0svr1:
+  shard0svr2:
+
+  shard1svr0:
+  shard1svr1:
+  shard1svr2:
