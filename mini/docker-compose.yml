@@ -7,8 +7,6 @@ services:
     volumes:
       - configsvr0:/data/db
       - ./../keyfile:/data/keyfile:ro
-    ports:
-      - "127.0.0.1:27001:27017"
 
   shard0svr0:
     image: mongo
@@ -16,8 +14,6 @@ services:
     volumes:
       - shard0svr0:/data/db
       - ./../keyfile:/data/keyfile:ro
-    ports:
-      - "127.0.0.1:27004:27017"
 
   shard1svr0:
     image: mongo
@@ -25,16 +21,26 @@ services:
     volumes:
       - shard1svr0:/data/db
       - ./../keyfile:/data/keyfile:ro
-    ports:
-      - "127.0.0.1:27007:27017"
 
-  mongos:
+  mongos0:
     image: mongo
     command: mongos --configdb configsvr/configsvr0:27017 --bind_ip 0.0.0.0 --port 27017 --keyFile /data/keyfile
-    ports:
-      - "127.0.0.1:27017:27017"
     volumes:
       - ./../keyfile:/data/keyfile:ro
+    depends_on:
+      - configsvr0
+      - shard0svr0
+      - shard1svr0
+
+  haproxy0:
+    image: haproxy
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:27017:27017"
+    depends_on:
+      - mongos0
 
 volumes:
   configsvr0:

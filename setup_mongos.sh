@@ -1,12 +1,11 @@
 #!/bin/bash
-SHARD=$1
-if [[ "" == "${SHARD}" ]]; then
+CONTAINER=$1
+SHARD=$2
+if [[ "" == "${CONTAINER}" || "" == "${SHARD}" ]] ; then
   echo "missing shard-number"
-  echo "usage: $0 <shard-number>"
+  echo "usage: $0 <container-name> <shard-number>"
   exit 1
 fi
-
-CONTAINER=msc_mongos_1
 
 echo "========================================"
 echo " add shard${SHARD}"
