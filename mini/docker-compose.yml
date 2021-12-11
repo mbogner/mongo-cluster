@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+
+  configsvr0:
+    image: mongo
+    command: mongod --configsvr --replSet configsvr --port 27017 --dbpath /data/db --keyFile /data/keyfile
+    volumes:
+      - configsvr0:/data/db
+      - ./../keyfile:/data/keyfile:ro
+    ports:
+      - "127.0.0.1:27001:27017"
+
+  shard0svr0:
+    image: mongo
+    command: mongod --shardsvr --replSet shard0 --port 27017 --dbpath /data/db --keyFile /data/keyfile
+    volumes:
+      - shard0svr0:/data/db
+      - ./../keyfile:/data/keyfile:ro
+    ports:
+      - "127.0.0.1:27004:27017"
+
+  shard1svr0:
+    image: mongo
+    command: mongod --shardsvr --replSet shard1 --port 27017 --dbpath /data/db --keyFile /data/keyfile
+    volumes:
+      - shard1svr0:/data/db
+      - ./../keyfile:/data/keyfile:ro
+    ports:
+      - "127.0.0.1:27007:27017"
+
+  mongos:
+    image: mongo
+    command: mongos --configdb configsvr/configsvr0:27017 --bind_ip 0.0.0.0 --port 27017 --keyFile /data/keyfile
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - ./../keyfile:/data/keyfile:ro
+
+volumes:
+  configsvr0:
+  shard0svr0:
+  shard1svr0:

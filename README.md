@@ -75,3 +75,10 @@ db.<collectionName>.find()
 // create index for existing table
 db.<collectionName>.createIndex({"title": "hashed"})
 ```
+
+# Small Dev Setup
+
+Bringing up a whole cluster isn't necessary for a local dev environment. But still I don't want to fall back to a single
+mongod instance which may behave differently in some edge cases. For this purpose I added a mini cluster without any
+secondaries in the mini folder. Simply run start.sh in the mini subfolder to start a much smaller dev cluster. Don't
+forget to run genKeyfile.sh also for this one in the project root. That script is shared.
